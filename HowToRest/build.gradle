@@ -7,6 +7,17 @@ war {
     // webXml = file('src/web.xml')
 }
 
+jettyRun {
+    reload = "automatic"
+    scanIntervalSeconds = 1
+}
+
+eclipse {
+    classpath {
+        defaultOutputDir = file('build/classes/main')
+    }
+}
+
 repositories {
     mavenCentral()
 }
@@ -15,3 +26,7 @@ dependencies {
     providedCompile "javax.servlet:servlet-api:2.5";
 }
 
+task deploy(type: Copy) {
+    from war
+    into "${webserverHome}"
+}
