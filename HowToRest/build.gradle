@@ -2,6 +2,8 @@ apply plugin: 'java'
 apply plugin: 'war'
 apply plugin: 'jetty'
 apply plugin: 'eclipse-wtp'
+apply plugin: "findbugs"
+
 
 war {
     // webXml = file('src/web.xml')
@@ -24,7 +26,35 @@ repositories {
 
 dependencies {
     providedCompile "javax.servlet:servlet-api:2.5";
+    runtime 'com.google.gwt:gwt-servlet:2.6.1'
+    compile 'org.slf4j:slf4j-api:1.7.7'
+    compile 'org.slf4j:slf4j-simple:1.7.7'
 }
+
+findbugs {
+
+    toolVersion = "2.0.3"
+    //toolVersion = "3.0.0-rc1"
+    
+    //sourceSets = [sourceSets.main]
+
+    reportsDir = file("$project.buildDir/findbugsReports")
+    effort = "max"
+    reportLevel = "low"
+
+    //ignoreFailures = true
+    //visitors = ["FindSqlInjection", "SwitchFallthrough"]
+    //omitVisitors = ["FindNonShortCircuit"]
+    // includeFilter = file("$rootProject.projectDir/config/findbugs/includeFilter.xml")
+    // excludeFilter = file("$rootProject.projectDir/config/findbugs/excludeFilter.xml")
+}
+
+tasks.withType(FindBugs) {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+ }
 
 task deploy(type: Copy) {
     from war

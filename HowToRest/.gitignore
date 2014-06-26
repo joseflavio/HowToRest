@@ -4,5 +4,6 @@ gradle.properties
 .project
 build/
 .gradle/
-.settings/
 /bin
+.settings/org.eclipse.wst.common.component
+.settings/org.eclipse.wst.common.project.facet.core.xml
