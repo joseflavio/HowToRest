@@ -17,6 +17,8 @@ jettyRun {
 eclipse {
     classpath {
         defaultOutputDir = file('build/classes/main')
+        downloadSources = true
+        downloadJavadoc = true
     }
 }
 
@@ -25,8 +27,14 @@ repositories {
 }
 
 dependencies {
+
+    // Needed for gwtCompile and the javaCompile, it also includes the servlet-api
+    providedCompile 'com.google.gwt:gwt-user:2.6.1'
+    providedCompile 'com.google.gwt:gwt-dev:2.6.1'
+
     providedCompile "javax.servlet:servlet-api:2.5";
     runtime 'com.google.gwt:gwt-servlet:2.6.1'
+
     compile 'org.slf4j:slf4j-api:1.7.7'
     compile 'org.slf4j:slf4j-simple:1.7.7'
 }
@@ -59,4 +67,48 @@ tasks.withType(FindBugs) {
 task deploy(type: Copy) {
     from war
     into "${webserverHome}"
+}
+
+
+
+
+task compileGwt (dependsOn: classes, type: JavaExec) {
+    ext.buildDir = "${project.buildDir}/gwt"
+    ext.extraDir = "${project.buildDir}/extra"
+     
+    inputs.source sourceSets.main.java.srcDirs
+    inputs.dir sourceSets.main.output.resourcesDir
+    outputs.dir buildDir
+     
+    // Workaround for incremental build (GRADLE-1483)
+    outputs.upToDateSpec = new org.gradle.api.specs.AndSpec()
+     
+    doFirst {
+        file(buildDir).mkdirs()
+        //classpath.each { println it.name}
+    }
+     
+    main = 'com.google.gwt.dev.Compiler'
+     
+    classpath {
+        [
+        sourceSets.main.java.srcDirs, // Java source
+        sourceSets.main.output.resourcesDir, // Generated resources
+        sourceSets.main.output.classesDir, // Generated classes
+        sourceSets.main.compileClasspath, // Deps
+        ]
+    }
+     
+    args =
+    [
+        'example.gwt.HowToRest', // Your GWT module
+        '-war', buildDir,
+        '-logLevel', 'INFO',
+        '-localWorkers', '2',
+        '-compileReport',
+        '-extra', extraDir,
+        // '-draftCompile' // Speeds up compile with 25%
+    ]
+     
+    maxHeapSize = '512M'
 }

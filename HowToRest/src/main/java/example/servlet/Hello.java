@@ -1,4 +1,4 @@
-package example;
+package example.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// Extend HttpServlet class
 public class Hello extends HttpServlet {
 
     private static final long serialVersionUID = 5673733253605290120L;
@@ -26,8 +25,8 @@ public class Hello extends HttpServlet {
     }
 
     @Override
-    public void doGet(final HttpServletRequest request, final HttpServletResponse response)
-            throws ServletException, IOException {
+    public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
+            IOException {
 
         logger.trace("doGet - enter");
 
@@ -39,4 +38,5 @@ public class Hello extends HttpServlet {
             out.println("<h1>" + message + "</h1>");
         }
     }
-}
+
+}// class
