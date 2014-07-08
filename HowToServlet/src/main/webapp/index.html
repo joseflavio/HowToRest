@@ -1,3 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>HowToRest</title>
+</head>
 <body>
-<a href="testServlet">testServlet</a>
+    <script>
+        function appendTextToDocument(text) {
+            var newDiv = document.createElement("div");
+            var newContent = document.createTextNode(text);
+            newDiv.appendChild(newContent); 
+            document.body.appendChild(newDiv);
+        }
+        function responseCallback () {
+            console.log("Last-Modified header: " + this.getResponseHeader("Last-Modified")); /* A valid GMTString date or null */
+            console.log("Response content: " + this.responseText);
+            appendTextToDocument(this.responseText);
+        }
+        function post(path, postContent) {
+            // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest#open%28%29
+            var oReq = new XMLHttpRequest();
+            oReq.onload = responseCallback;
+            oReq.open("post", path, true); // true -> Async
+            oReq.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            oReq.send(postContent);
+        }
+        function preparePost() {
+            var postContent = document.getElementById("postContentInput").value;
+            // console.log("postContent=" + postContent);
+            post("testServlet", postContent);
+        }
+    </script>
+
+    <br> Servlet Service:
+    <a href="testServlet">testServlet</a>
+    <br>
+    <textarea id="postContentInput" rows="10" cols="80" spellcheck="false" wrap="soft"></textarea>
+    <input type="button" value="Post" onclick="preparePost();" />
+
 </body>
+</html>

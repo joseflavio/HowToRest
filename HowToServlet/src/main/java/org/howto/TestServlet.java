@@ -1,5 +1,6 @@
 package org.howto;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -13,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @WebServlet("/testServlet")
-public class TestServlet extends HttpServlet {
+public final class TestServlet extends HttpServlet {
 
     private static final long serialVersionUID = -1331165769691641960L;
 
@@ -22,11 +23,34 @@ public class TestServlet extends HttpServlet {
     @Override
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
             IOException {
-        TestServlet.logger.debug("doGet - enter");
-        try (PrintWriter out = response.getWriter()) {
-            String simpleParam = request.getParameter("name");
-            out.println("Hello World " + simpleParam);
+
+        logger.debug("doGet - enter");
+        try (final PrintWriter out = response.getWriter()) {
+            String simpleParam = request.getParameter("value");
+            out.println("Hello Get World " + simpleParam);
         }
+
+    }
+
+    @Override
+    public void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
+            IOException {
+
+        logger.debug("doPost - enter");
+
+        String content = new String();
+        try (final BufferedReader requestReader = request.getReader()) {
+            String line = null;
+            while ((line = requestReader.readLine()) != null) {
+                content += line;
+                content += "\n";
+            }
+        }
+
+        try (final PrintWriter out = response.getWriter()) {
+            out.println("Hello Post World " + content);
+        }
+
     }
 
 }// class
