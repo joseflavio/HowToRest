@@ -25,6 +25,7 @@ public final class TestServlet extends HttpServlet {
             IOException {
 
         logger.debug("doGet - enter");
+
         try (final PrintWriter out = response.getWriter()) {
             String simpleParam = request.getParameter("value");
             out.println("Hello Get World " + simpleParam);
@@ -46,6 +47,8 @@ public final class TestServlet extends HttpServlet {
                 content += "\n";
             }
         }
+
+        logger.debug("content=" + content);
 
         try (final PrintWriter out = response.getWriter()) {
             out.println("Hello Post World " + content);
